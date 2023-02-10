@@ -12,7 +12,10 @@ import numpy as np
 import time
 import seaborn as sns
 import statistics
+import configparser
 import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objs as go
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QMovie
@@ -27,7 +30,7 @@ from mpl_toolkits.mplot3d import Axes3D
 class Ui_Measurements(object):
     def setupUi(self, Measurements):
         Measurements.setObjectName("Measurements")
-        Measurements.resize(400, 320)
+        Measurements.resize(600, 320)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("logo-orion-vertical-1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Measurements.setWindowIcon(icon)
@@ -42,25 +45,25 @@ class Ui_Measurements(object):
         self.widget.setStyleSheet("background-color:rgb(0, 66, 107)")
         self.widget.setObjectName("widget")
         self.folder_select = QtWidgets.QPushButton(self.widget)
-        self.folder_select.setGeometry(QtCore.QRect(25, 40, 350, 20))
+        self.folder_select.setGeometry(QtCore.QRect(25, 40, 550, 20))
         self.folder_select.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255,255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
         self.folder_select.setText("Select folder")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(175, 140, 100, 100))
+        self.label.setGeometry(QtCore.QRect(275, 140, 100, 100))
         self.label.setMinimumSize(QtCore.QSize(100, 100))
         self.label.setMaximumSize(QtCore.QSize(100, 100))
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
-        self.buttonBox.setGeometry(QtCore.QRect(120, 120, 160, 30))
+        self.buttonBox.setGeometry(QtCore.QRect(205, 120, 180, 30))
         self.buttonBox.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.lineEdit = QtWidgets.QLineEdit(self.widget)
-        self.lineEdit.setGeometry(QtCore.QRect(100, 250, 200, 20))
+        self.lineEdit.setGeometry(QtCore.QRect(200, 250, 200, 20))
         self.lineEdit.setStyleSheet("color: rgb(255, 255, 255);")
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setReadOnly(True)
@@ -70,43 +73,60 @@ class Ui_Measurements(object):
         self.checkBox.setStyleSheet("color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
         self.checkBox.setObjectName("checkBox")
+        self.checkBox_1 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_1.setGeometry(QtCore.QRect(120, 80, 82, 17))
+        self.checkBox_1.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
+        self.checkBox_1.setObjectName("checkBox_1")
         self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBox_2.setGeometry(QtCore.QRect(120, 80, 111, 17))
+        self.checkBox_2.setGeometry(QtCore.QRect(220, 80, 111, 17))
         self.checkBox_2.setStyleSheet("color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_2.setObjectName("checkBox_2")
         self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBox_3.setGeometry(QtCore.QRect(220, 80, 82, 17))
+        self.checkBox_3.setGeometry(QtCore.QRect(320, 80, 82, 17))
         self.checkBox_3.setStyleSheet("color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_3.setObjectName("checkBox_3")
         self.checkBox_4 = QtWidgets.QCheckBox(self.centralwidget)
-        self.checkBox_4.setGeometry(QtCore.QRect(320, 80, 82, 17))
+        self.checkBox_4.setGeometry(QtCore.QRect(420, 80, 82, 17))
         self.checkBox_4.setStyleSheet("color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_4.setObjectName("checkBox_4")
+        self.checkBox_5 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_5.setGeometry(QtCore.QRect(520, 80, 82, 17))
+        self.checkBox_5.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+        self.checkBox_5.setObjectName("checkBox_5")
         Measurements.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Measurements)
         self.menubar.setObjectName("menubar")
+        self.menuOption = QtWidgets.QMenu(self.menubar)
+        self.menuOption.setObjectName("menuOption")
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
         Measurements.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(Measurements)
         self.statusbar.setObjectName("statusbar")
         Measurements.setStatusBar(self.statusbar)
+        self.actionData = QtWidgets.QAction(Measurements)
+        self.actionData.setObjectName("actionData")
         self.actionAbout_Minerva = QtWidgets.QAction(Measurements)
         self.actionAbout_Minerva.setObjectName("actionAbout_Minerva")
         self.actionAbout_Measurement = QtWidgets.QAction(Measurements)
         self.actionAbout_Measurement.setObjectName("actionAbout_Measurement")
         self.actionDoc = QtWidgets.QAction(Measurements)
         self.actionDoc.setObjectName("actionDoc")
+        self.menuOption.addAction(self.actionData)
         self.menuHelp.addAction(self.actionAbout_Measurement)
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.actionDoc)
         self.menuHelp.addAction(self.actionAbout_Minerva)
         self.menubar.addAction(self.menuHelp.menuAction())
+        self.actionData.triggered.connect(self.open_data)
         self.actionAbout_Minerva.triggered.connect(self.open_about_minerva)
         self.actionAbout_Measurement.triggered.connect(self.open_about_measurement)
+        self.menubar.addAction(self.menuOption.menuAction())
         self.actionDoc.triggered.connect(self.open_doc)
 
         self.retranslateUi(Measurements)
@@ -118,10 +138,14 @@ class Ui_Measurements(object):
         self.folder_select.setText(_translate("Measurements", "Select File Folder"))
         self.folder_select.clicked.connect(self.select_folder)
         self.lineEdit.setText(_translate("Measurements", "  Version 1.4 by Minerva Dev® & Orion"))
-        self.checkBox.setText(_translate("MainWindow", "Heat Map"))
-        self.checkBox_2.setText(_translate("MainWindow", "ID (mm)"))
-        self.checkBox_3.setText(_translate("MainWindow", "OoR (mm)"))
-        self.checkBox_4.setText(_translate("MainWindow", "OoR(%)"))
+        self.checkBox.setText(_translate("MainWindow", "HeatMap"))
+        self.checkBox_1.setText(_translate("Measurements", "Surface"))
+        self.checkBox_2.setText(_translate("Measurements", "ID (mm)"))
+        self.checkBox_3.setText(_translate("Measurements", "OoR (mm)"))
+        self.checkBox_4.setText(_translate("Measurements", "OoR(%)"))
+        self.checkBox_5.setText(_translate("Measurements", "Ova"))
+        self.menuOption.setTitle(_translate("Measurements", "Option"))
+        self.actionData.setText(_translate("Measurements", "Data"))
         self.menuHelp.setTitle(_translate("Measurements", "Help"))
         self.actionAbout_Minerva.setText(_translate("Measurements", "About Minerva"))
         self.actionDoc.setText(_translate("Measurements", "Doc"))
@@ -129,6 +153,88 @@ class Ui_Measurements(object):
         self.buttonBox.rejected.connect(self.close_program)
         self.buttonBox.accepted.connect(self.run_program)
 
+
+    def open_data(self):
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+
+        try:
+            idn = config.getfloat("DEFAULT", "idn")
+            tks = config.getfloat("DEFAULT", "tks")
+            wt = config.getfloat("DEFAULT", "wt")
+            od = config.getfloat("DEFAULT", "od")
+        except (configparser.NoOptionError, ValueError):
+            idn = 188.30
+            tks = 22.00
+            wt = 2.50
+            od = 237.30
+
+        data = QtWidgets.QDialog()
+        data.setWindowTitle("Data")
+        data.resize(420, 420)
+        layout = QtWidgets.QVBoxLayout()
+        
+        # Add image
+        ref = QtGui.QPixmap("pipe-and-tube.png")
+        label_ref = QtWidgets.QLabel()
+        label_ref.setPixmap(ref)
+        layout.addWidget(label_ref)
+        
+        # Add label and line edit for idn
+        label = QtWidgets.QLabel("ID nominal")
+        layout.addWidget(label)
+        line_edit = QtWidgets.QLineEdit()
+        line_edit.setText("%.2f" % idn)
+        layout.addWidget(line_edit)
+        
+        # Add label and line edit for od
+        label_od = QtWidgets.QLabel("OD")
+        layout.addWidget(label_od)
+        line_edit_1 = QtWidgets.QLineEdit()
+        line_edit_1.setText("%.2f" % od)
+        layout.addWidget(line_edit_1)
+        
+        # Add label and line edit for tks
+        label_tks = QtWidgets.QLabel("Thickness")
+        layout.addWidget(label_tks)
+        line_edit_2 = QtWidgets.QLineEdit()
+        line_edit_2.setText("%.2f" % tks)
+        layout.addWidget(line_edit_2)
+        
+        # Add label and line edit for wt
+        label_wt = QtWidgets.QLabel("Wall Thickness")
+        layout.addWidget(label_wt)
+        line_edit_3 = QtWidgets.QLineEdit()
+        line_edit_3.setText("%.2f" % wt)
+        layout.addWidget(line_edit_3)
+    
+        data.finished.connect(lambda: self.save_idn(line_edit.text(), config))
+        data.finished.connect(lambda: self.save_od(line_edit_1.text(), config))
+        data.finished.connect(lambda: self.save_tks(line_edit_2.text(), config))
+        data.finished.connect(lambda: self.save_wt(line_edit_3.text(), config))
+        data.setLayout(layout)
+        data.exec_()
+
+    def save_idn(self, idn, config):
+        config.set("DEFAULT", "idn", idn.replace(",", "."))
+        with open("config.ini", "w") as config_file:
+            config.write(config_file)
+
+    def save_od(self, od, config):
+        config.set("DEFAULT", "od", od.replace(",", "."))
+        with open("config.ini", "w") as config_file:
+            config.write(config_file)
+
+    def save_tks(self, tks, config):
+        config.set("DEFAULT", "tks", tks.replace(",", "."))
+        with open("config.ini", "w") as config_file:
+            config.write(config_file)
+
+    def save_wt(self, wt, config):
+        config.set("DEFAULT", "wt", wt.replace(",", "."))
+        with open("config.ini", "w") as config_file:
+            config.write(config_file)
+        
     def open_about_minerva(self):
         about_Minerva = QtWidgets.QDialog()
         about_Minerva.setWindowTitle("About Minerva")
@@ -218,7 +324,7 @@ class Ui_Measurements(object):
             self.movie.start()
             # Run the program using the selected folder in a new thread
             program_instance = Program()
-            program_instance = Program(selected_folder=self.selected_folder, movie=self.movie, label=self.label, checkBox = self.checkBox, checkBox_2 = self.checkBox_2, checkBox_3 = self.checkBox_3, checkBox_4 = self.checkBox_4 )
+            program_instance = Program(selected_folder=self.selected_folder, movie=self.movie, label=self.label, checkBox = self.checkBox, checkBox_1 = self.checkBox_1,checkBox_2 = self.checkBox_2, checkBox_3 = self.checkBox_3, checkBox_4 = self.checkBox_4, checkBox_5 = self.checkBox_5 )
             t = threading.Thread(target=program_instance.programa)
             t.start()
 
@@ -228,15 +334,17 @@ class Ui_Measurements(object):
         sys.exit()
 
 class Program:
-    def __init__(self, selected_folder=None, movie=None, label=None, checkBox=None, checkBox_2=None, checkBox_3=None, checkBox_4=None):
+    def __init__(self, selected_folder=None, movie=None, label=None, checkBox=None, checkBox_1=None,checkBox_2=None, checkBox_3=None, checkBox_4=None, checkBox_5=None):
         self.selected_folder = selected_folder
         self.count = 0
         self.movie = movie
         self.label = label
         self.checkBox = checkBox
+        self.checkBox_1 = checkBox_1
         self.checkBox_2 = checkBox_2
         self.checkBox_3 = checkBox_3
         self.checkBox_4 = checkBox_4
+        self.checkBox_5 = checkBox_5
 
     def show_error_message(self, error_message):
         message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
@@ -479,7 +587,8 @@ class Program:
             # Load the workbook
             workbook = openpyxl.load_workbook(output_file)
 
-            #Figures checkBox 
+
+            #HeatMap checkBox 
             if self.checkBox.isChecked():
                 # Iterate over the sheet names
                 for sheet_name in workbook.sheetnames:
@@ -501,12 +610,33 @@ class Program:
                         os.remove(filename_fig)
                     plt.savefig(filename_fig, bbox_inches='tight')
 
+                    
+            #Surface checkBox_1 
+            if self.checkBox_1.isChecked():
+                # Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                    last_row = sheet.max_row
+                    data = [row[12:] for row in sheet.iter_rows(min_row=2, max_row=last_row, values_only=True)]
+                    data = np.array(data)
+                    fig = go.Figure(data=[go.Surface(z=data, colorscale='viridis')])
+                    fig.update_layout(scene=dict(xaxis_title='Angle (°)',
+                                                  yaxis_title='Depth',
+                                                  zaxis_title='ID radial(mm)'))
+                    figures_folder = os.path.join(self.selected_folder, "surface")
+                    if not os.path.exists(figures_folder):
+                        os.makedirs(figures_folder)
+                    filename_fig = os.path.join(figures_folder, f"{sheet_name}.html")
+                    if os.path.exists(filename_fig):
+                        os.remove(filename_fig)
+                    fig.write_html(filename_fig, auto_open=False)
+
             #ID checkBox_2       
             if self.checkBox_2.isChecked():
                 #Iterate over the sheet names
                 for sheet_name in workbook.sheetnames:
                     sheet = workbook[sheet_name]
-                    fig, ax = plt.subplots(figsize=(10,10))
+                    fig, ax = plt.subplots()
                     last_row = sheet.max_row
                     data1 = [sheet.cell(row=i, column=3).value for i in range(2, last_row + 1)]
                     data2 = [sheet.cell(row=i, column=4).value for i in range(2, last_row + 1)]
@@ -532,7 +662,7 @@ class Program:
                 #Iterate over the sheet names
                 for sheet_name in workbook.sheetnames:
                     sheet = workbook[sheet_name]
-                    fig, ax = plt.subplots(figsize=(10,10))
+                    fig, ax = plt.subplots()
                     last_row = sheet.max_row
                     data4 = [sheet.cell(row=i, column=6).value for i in range(2, last_row + 1)]
                     plt.plot(data4, label="Oor (mm)")
@@ -554,7 +684,7 @@ class Program:
                 #Iterate over the sheet names
                 for sheet_name in workbook.sheetnames:
                     sheet = workbook[sheet_name]
-                    fig, ax = plt.subplots(figsize=(10,10))
+                    fig, ax = plt.subplots()
                     last_row = sheet.max_row
                     data5 = [sheet.cell(row=i, column=7).value for i in range(2, last_row + 1)]
                     plt.plot(data5, label="Oor (%)")
@@ -571,9 +701,49 @@ class Program:
                         os.remove(filename_oor1)
                     plt.savefig(filename_oor1, bbox_inches='tight')
 
+            #Ova checkBox_5      
+            if self.checkBox_5.isChecked():
+                #Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                    for i in range(2, sheet.max_row + 1):
+                        linha = []
+                        for column in range(12, sheet.max_column + 1):
+                            value = sheet.cell(row=i, column=column).value
+                            linha.append(float(value))
+                        
+                        # Create two lists for the x and y coordinates
+                        x = np.cos(np.linspace(0, 2*np.pi, len(linha)))
+                        y = np.sin(np.linspace(0, 2*np.pi, len(linha)))
+
+                        # Multiply the coordinates by the values in the row
+                        x = x * linha
+                        y = y * linha
+
+                        # Plot the scatter plot
+                        fig, ax = plt.subplots()
+                        ax.scatter(x, y, s=0.5)
+
+                        # Add another circle with radius 81.575
+                        circle = plt.Circle((0,0), 82.55, color='red', fill=False)
+                        ax.add_artist(circle)
+
+                        plt.axis('equal')
+                        plt.xlim(-120, 120)
+                        plt.ylim(-100, 100)
+                        plt.title("Ova", fontweight='bold')
+                        
+                        ova_folder = os.path.join(self.selected_folder, "Ova")
+                        if not os.path.exists(ova_folder):
+                            os.makedirs(ova_folder)
+                        filename_ova = os.path.join(ova_folder, f"{sheet_name}-linha{i}.png")
+                        if os.path.exists(filename_ova):
+                            os.remove(filename_ova)
+                        plt.savefig(filename_ova, bbox_inches='tight')        
+
         #Finish program        
         self.movie.stop()
-        self.label.setGeometry(162, 140, 76, 10)
+        self.label.setGeometry(242, 140, 76, 10)
         self.label.setStyleSheet("color: white; font-size: 10pt; font-family: MS Shell Dlg 2; font-weight: bold")
         self.label.setText("COMPLETE")
                 
