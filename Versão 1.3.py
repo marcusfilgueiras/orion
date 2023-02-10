@@ -1,8 +1,5 @@
 # Created by: PyQt5 UI code generator 5.15.7
-from PyQt5.QtGui import QMovie
 import threading
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
 import os
 import sys
 import time
@@ -16,6 +13,9 @@ import time
 import seaborn as sns
 import statistics
 import matplotlib.pyplot as plt
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QMovie
 from mpl_toolkits import mplot3d
 from openpyxl.styles import Font, Color, PatternFill, Alignment
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -42,7 +42,7 @@ class Ui_Measurements(object):
         self.widget.setStyleSheet("background-color:rgb(0, 66, 107)")
         self.widget.setObjectName("widget")
         self.folder_select = QtWidgets.QPushButton(self.widget)
-        self.folder_select.setGeometry(QtCore.QRect(25, 50, 350, 20))
+        self.folder_select.setGeometry(QtCore.QRect(25, 40, 350, 20))
         self.folder_select.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255,255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
@@ -53,7 +53,7 @@ class Ui_Measurements(object):
         self.label.setMaximumSize(QtCore.QSize(100, 100))
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
-        self.buttonBox.setGeometry(QtCore.QRect(120, 110, 160, 30))
+        self.buttonBox.setGeometry(QtCore.QRect(120, 120, 160, 30))
         self.buttonBox.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
@@ -65,6 +65,26 @@ class Ui_Measurements(object):
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setReadOnly(True)
         self.gridLayout.addWidget(self.widget, 0, 0, 1, 1)
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setGeometry(QtCore.QRect(20, 80, 82, 17))
+        self.checkBox.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
+        self.checkBox.setObjectName("checkBox")
+        self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_2.setGeometry(QtCore.QRect(120, 80, 111, 17))
+        self.checkBox_2.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+        self.checkBox_2.setObjectName("checkBox_2")
+        self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_3.setGeometry(QtCore.QRect(220, 80, 82, 17))
+        self.checkBox_3.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+        self.checkBox_3.setObjectName("checkBox_3")
+        self.checkBox_4 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_4.setGeometry(QtCore.QRect(320, 80, 82, 17))
+        self.checkBox_4.setStyleSheet("color: rgb(255, 255, 255);\n"
+"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+        self.checkBox_4.setObjectName("checkBox_4")
         Measurements.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Measurements)
         self.menubar.setObjectName("menubar")
@@ -78,12 +98,16 @@ class Ui_Measurements(object):
         self.actionAbout_Minerva.setObjectName("actionAbout_Minerva")
         self.actionAbout_Measurement = QtWidgets.QAction(Measurements)
         self.actionAbout_Measurement.setObjectName("actionAbout_Measurement")
+        self.actionDoc = QtWidgets.QAction(Measurements)
+        self.actionDoc.setObjectName("actionDoc")
         self.menuHelp.addAction(self.actionAbout_Measurement)
         self.menuHelp.addSeparator()
+        self.menuHelp.addAction(self.actionDoc)
         self.menuHelp.addAction(self.actionAbout_Minerva)
         self.menubar.addAction(self.menuHelp.menuAction())
         self.actionAbout_Minerva.triggered.connect(self.open_about_minerva)
         self.actionAbout_Measurement.triggered.connect(self.open_about_measurement)
+        self.actionDoc.triggered.connect(self.open_doc)
 
         self.retranslateUi(Measurements)
         QtCore.QMetaObject.connectSlotsByName(Measurements)
@@ -93,9 +117,14 @@ class Ui_Measurements(object):
         Measurements.setWindowTitle(_translate("Measurements", "Measurements"))
         self.folder_select.setText(_translate("Measurements", "Select File Folder"))
         self.folder_select.clicked.connect(self.select_folder)
-        self.lineEdit.setText(_translate("Measurements", "  Version 1.3 by Minerva Dev® & Orion"))
+        self.lineEdit.setText(_translate("Measurements", "  Version 1.4 by Minerva Dev® & Orion"))
+        self.checkBox.setText(_translate("MainWindow", "Heat Map"))
+        self.checkBox_2.setText(_translate("MainWindow", "ID (mm)"))
+        self.checkBox_3.setText(_translate("MainWindow", "OoR (mm)"))
+        self.checkBox_4.setText(_translate("MainWindow", "OoR(%)"))
         self.menuHelp.setTitle(_translate("Measurements", "Help"))
         self.actionAbout_Minerva.setText(_translate("Measurements", "About Minerva"))
+        self.actionDoc.setText(_translate("Measurements", "Doc"))
         self.actionAbout_Measurement.setText(_translate("Measurements", "About Measurement"))
         self.buttonBox.rejected.connect(self.close_program)
         self.buttonBox.accepted.connect(self.run_program)
@@ -110,6 +139,33 @@ class Ui_Measurements(object):
         about_Minerva.setLayout(layout)
         about_Minerva.exec_()
 
+    def open_doc(self):
+        doc = QtWidgets.QDialog()
+        doc.setWindowTitle("Doc")
+        doc.resize(280, 420)
+        layout = QtWidgets.QVBoxLayout()
+        label = QtWidgets.QLabel()
+        title1 = QtWidgets.QLabel("Errno 13")
+        title1.setAlignment(QtCore.Qt.AlignCenter)
+        title1.setFont(QtGui.QFont("MS Shell Dlg 2", 12, QtGui.QFont.Bold))
+        layout.addWidget(title1)
+
+        para1 = QtWidgets.QLabel("Indicates that you are trying to run the program with an open Excel file in the same folder. This may occur if you have previously executed the program, created an Excel file, and the file is still open when you are trying to run the program again.")
+        para1.setWordWrap(True)
+        layout.addWidget(para1)
+
+        title2 = QtWidgets.QLabel("WinError 267")
+        title2.setAlignment(QtCore.Qt.AlignCenter)
+        title2.setFont(QtGui.QFont("MS Shell Dlg 2", 12, QtGui.QFont.Bold))
+        layout.addWidget(title2)
+
+        para2 = QtWidgets.QLabel("Indicates that you are trying to run the program with a folder that has already had the program executed and contains at least one figures folder, which could be a single Heat Map folder, ID folder, OoR (mm) folder, OoR (%) folder, or a combination of them. The error message recommends deleting the folder and restarting the program for a new round or cancelling, as the processing of this folder has already been completed.")
+        para2.setWordWrap(True)
+        layout.addWidget(para2)
+        label.setWordWrap(True)
+        doc.setLayout(layout)
+        doc.exec_()
+
     def open_about_measurement(self):
         about_measurement = QtWidgets.QDialog()
         about_measurement.setWindowTitle("About Measurement")
@@ -123,7 +179,7 @@ class Ui_Measurements(object):
         layout.addWidget(separator)
         label = QtWidgets.QLabel("Measurement is a program designed to Orion make it easy to take and store measurements."
                                  "With its user-friendly interface, you can perform accurate measurements with just a few clicks.\n\n"
-                                 "Version: 1.3\n"
+                                 "Version: 1.4\n"
                                  "Author: Marcus Filgueiras and Gustavo Pessanha\n"
                                  "Copyright (c) 2023 Minerva Dev")
         label.setWordWrap(True)
@@ -162,7 +218,7 @@ class Ui_Measurements(object):
             self.movie.start()
             # Run the program using the selected folder in a new thread
             program_instance = Program()
-            program_instance = Program(selected_folder=self.selected_folder, movie=self.movie, label=self.label)
+            program_instance = Program(selected_folder=self.selected_folder, movie=self.movie, label=self.label, checkBox = self.checkBox, checkBox_2 = self.checkBox_2, checkBox_3 = self.checkBox_3, checkBox_4 = self.checkBox_4 )
             t = threading.Thread(target=program_instance.programa)
             t.start()
 
@@ -172,11 +228,15 @@ class Ui_Measurements(object):
         sys.exit()
 
 class Program:
-    def __init__(self, selected_folder=None, movie=None, label=None):
+    def __init__(self, selected_folder=None, movie=None, label=None, checkBox=None, checkBox_2=None, checkBox_3=None, checkBox_4=None):
         self.selected_folder = selected_folder
         self.count = 0
         self.movie = movie
         self.label = label
+        self.checkBox = checkBox
+        self.checkBox_2 = checkBox_2
+        self.checkBox_3 = checkBox_3
+        self.checkBox_4 = checkBox_4
 
     def show_error_message(self, error_message):
         message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
@@ -350,6 +410,8 @@ class Program:
                     #This code calculates the maximum and minimum sum of pairs of cells
                     max_sum = 0
                     min_sum = float('inf')
+                    total_sum = 0
+                    counta = 0
                     for i in range(12,312):
                     # selecionar a célula atual e a célula seguinte
                         cell1 = sheet.cell(row=row[0].row, column=i)
@@ -359,20 +421,22 @@ class Program:
                         # atualizar o máximo da soma se a soma atual for maior que o máximo atual
                         max_sum = max(max_sum, sum)
                         min_sum = min(min_sum, sum)
-                        
-                        
-                    
+                        total_sum += sum
+                        counta += 1
+                    average = total_sum / counta
+                    oor = max_sum - min_sum
                     #Set the formula
                     #Set the formula for the Avg ID value
-                    row[2].value = f"=(sum(L{row[0].row}:WM{row[0].row})/300)"    
+                    row[2].value = average
                     #Set the formula for the Min ID value
-                    row[3].value = format(float(f"{min_sum}".replace(",", ".")), '.5f').replace(".", ",")
+                    row[3].value = float("{:.5f}".format(float(f"{min_sum}".replace(",", "."))))
                     #Set the formula for the Max ID value
-                    row[4].value = format(float(f"{max_sum}".replace(",", ".")), '.5f').replace(".", ",")
+                    row[4].value = float("{:.5f}".format(float(f"{max_sum}".replace(",", "."))))
                     #Set the formula for the OoR value
-                    row[5].value = f"=(E{row[0].row}-D{row[0].row})"
+                    #row[5].value = f"=(E{row[0].row}-D{row[0].row})"
+                    row[5].value = oor
                     #Set the formula for the Ova value
-                    row[6].value = f"=((F{row[0].row}/C{row[0].row})*100)"
+                    row[6].value = (oor/average)*100
                     # Set the formula for the maximum value
                     row[9].value = f"=MAX(L{row[0].row}:WM{row[0].row})"
                     # Set the formula for position degrees the maximum value
@@ -414,24 +478,98 @@ class Program:
             workbook.save(output_file)
             # Load the workbook
             workbook = openpyxl.load_workbook(output_file)
-            # Iterate over the sheet names
-            for sheet_name in workbook.sheetnames:
-                fig, axs = plt.subplots(1, 1, figsize=(10,10))
-                sheet = workbook[sheet_name]
-                last_row = sheet.max_row
-                data = [row[12:] for row in sheet.iter_rows(min_row=2, max_row=last_row, values_only=True)]
-                data = np.array(data)
-                image = axs.imshow(data, cmap='viridis', aspect = 2)
-                axs.set_title(sheet_name)
-                cbar = plt.colorbar(image, ax=axs, shrink=0.2)
-                figures_folder = os.path.join(self.selected_folder, "figures")
-                if not os.path.exists(figures_folder):
-                    os.makedirs(figures_folder)
-                filename = os.path.join(figures_folder, f"{sheet_name}.png")
-                if os.path.exists(filename):
-                    os.remove(filename)
-                plt.savefig(filename, bbox_inches='tight')
-                       
+
+            #Figures checkBox 
+            if self.checkBox.isChecked():
+                # Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    fig, axs = plt.subplots(1, 1, figsize=(10,10))
+                    sheet = workbook[sheet_name]
+                    last_row = sheet.max_row
+                    data = [row[12:] for row in sheet.iter_rows(min_row=2, max_row=last_row, values_only=True)]
+                    data = np.array(data)
+                    image = axs.imshow(data, cmap='viridis', aspect = 2)
+                    axs.set_title(sheet_name)
+                    axs.set_ylabel("Depth")
+                    cbar = plt.colorbar(image, ax=axs, shrink=0.2)
+                    cbar.ax.set_xlabel("ID radial(mm)")
+                    figures_folder = os.path.join(self.selected_folder, "heat map")
+                    if not os.path.exists(figures_folder):
+                        os.makedirs(figures_folder)
+                    filename_fig = os.path.join(figures_folder, f"{sheet_name}.png")
+                    if os.path.exists(filename_fig):
+                        os.remove(filename_fig)
+                    plt.savefig(filename_fig, bbox_inches='tight')
+
+            #ID checkBox_2       
+            if self.checkBox_2.isChecked():
+                #Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                    fig, ax = plt.subplots(figsize=(10,10))
+                    last_row = sheet.max_row
+                    data1 = [sheet.cell(row=i, column=3).value for i in range(2, last_row + 1)]
+                    data2 = [sheet.cell(row=i, column=4).value for i in range(2, last_row + 1)]
+                    data3 = [sheet.cell(row=i, column=5).value for i in range(2, last_row + 1)]
+                    plt.plot(data1, label="ID avg")
+                    plt.plot(data2, label="ID min")
+                    plt.plot(data3, label="ID max")
+                    ax.yaxis.grid(True)
+                    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+                    plt.ylabel("ID (mm)")
+                    plt.xlabel("Depth " + sheet_name)
+                    plt.title("ID", fontweight='bold')
+                    ID_folder = os.path.join(self.selected_folder, "ID")
+                    if not os.path.exists(ID_folder):
+                        os.makedirs(ID_folder)
+                    filename_id = os.path.join(ID_folder, f"{sheet_name}.png")
+                    if os.path.exists(filename_id):
+                        os.remove(filename_id)
+                    plt.savefig(filename_id, bbox_inches='tight')
+
+            #OoR (mm) checkBox_3      
+            if self.checkBox_3.isChecked():
+                #Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                    fig, ax = plt.subplots(figsize=(10,10))
+                    last_row = sheet.max_row
+                    data4 = [sheet.cell(row=i, column=6).value for i in range(2, last_row + 1)]
+                    plt.plot(data4, label="Oor (mm)")
+                    ax.yaxis.grid(True)
+                    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+                    plt.ylabel("OoR(mm)")
+                    plt.xlabel("Depth " + sheet_name)
+                    plt.title("OoR", fontweight='bold')
+                    OoR_folder = os.path.join(self.selected_folder, "OoR (mm)")
+                    if not os.path.exists(OoR_folder):
+                        os.makedirs(OoR_folder)
+                    filename_oor = os.path.join(OoR_folder, f"{sheet_name}.png")
+                    if os.path.exists(filename_oor):
+                        os.remove(filename_oor)
+                    plt.savefig(filename_oor, bbox_inches='tight')
+
+            #OoR(%) checkBox_4      
+            if self.checkBox_4.isChecked():
+                #Iterate over the sheet names
+                for sheet_name in workbook.sheetnames:
+                    sheet = workbook[sheet_name]
+                    fig, ax = plt.subplots(figsize=(10,10))
+                    last_row = sheet.max_row
+                    data5 = [sheet.cell(row=i, column=7).value for i in range(2, last_row + 1)]
+                    plt.plot(data5, label="Oor (%)")
+                    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+                    ax.yaxis.grid(True)
+                    plt.ylabel("OoR(%)")
+                    plt.xlabel("Depth " + sheet_name)
+                    plt.title("OoR", fontweight='bold')
+                    OoR1_folder = os.path.join(self.selected_folder, "OoR (%)")
+                    if not os.path.exists(OoR1_folder):
+                        os.makedirs(OoR1_folder)
+                    filename_oor1 = os.path.join(OoR1_folder, f"{sheet_name}.png")
+                    if os.path.exists(filename_oor1):
+                        os.remove(filename_oor1)
+                    plt.savefig(filename_oor1, bbox_inches='tight')
 
         #Finish program        
         self.movie.stop()
