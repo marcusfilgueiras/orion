@@ -56,7 +56,7 @@ class Ui_Measurements(object):
         self.label.setMaximumSize(QtCore.QSize(100, 100))
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
-        self.buttonBox.setGeometry(QtCore.QRect(205, 120, 180, 30))
+        self.buttonBox.setGeometry(QtCore.QRect(200, 120, 180, 30))
         self.buttonBox.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
@@ -346,12 +346,23 @@ class Program:
         self.checkBox_4 = checkBox_4
         self.checkBox_5 = checkBox_5
 
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+        self.idn = config.getfloat("DEFAULT", "idn")
+        self.od = config.getfloat("DEFAULT", "od")
+        self.tks = config.getfloat("DEFAULT", "tks")
+        self.wt = config.getfloat("DEFAULT", "wt")
+
     def show_error_message(self, error_message):
         message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
         message.exec_()
 
 
     def programa(self):
+        idn = self.idn
+        od = self.od
+        wt = self.wt
+        tks = self.tks
         if self.selected_folder:
             #Empty List
             filenames = []
@@ -364,29 +375,37 @@ class Program:
             
             #Extract the data from the pr5 files and transform it into txt with the data you need
             for folder in folders:
-                folder_names.append(folder)
-                for file in os.listdir(folder):
-                    if file.endswith('.pr5'):
-                        reference_filenames.append(file)
-                        # Open PR5 file for reading
-                        with open(os.path.join(folder, file), 'r') as f_in:
-                          # Create a text file name based on the PR5 file name
-                            txt_file = file[:-3] + 'txt'
-                            filenames.append(txt_file)
-                            # Open the text file for writing
-                            with open(os.path.join(folder, txt_file), 'w') as f_out:
-                              # Loop over the lines of the PR5 file
-                              for line in f_in:
-                                # Check if the current line starts with the string you want
-                                if line.startswith('[Average Data]'):
-                                 # Write all lines from here
-                                  break
-                              else:
-                                # If we didn't find the string "[Average Data]", continue to the next iteration
-                                continue
-                              # Write all remaining lines to the text file
-                              for line in f_in:
-                                f_out.write(line.replace('.', ',')[:19]+ '\n')
+                try:
+                    folder_names.append(folder)
+                    for file in os.listdir(folder):
+                        if file.endswith('.pr5'):
+                            reference_filenames.append(file)
+                            # Open PR5 file for reading
+                            with open(os.path.join(folder, file), 'r') as f_in:
+                              # Create a text file name based on the PR5 file name
+                                txt_file = file[:-3] + 'txt'
+                                filenames.append(txt_file)
+                                # Open the text file for writing
+                                with open(os.path.join(folder, txt_file), 'w') as f_out:
+                                  # Loop over the lines of the PR5 file
+                                  for line in f_in:
+                                    # Check if the current line starts with the string you want
+                                    if line.startswith('[Average Data]'):
+                                     # Write all lines from here
+                                      break
+                                  else:
+                                    # If we didn't find the string "[Average Data]", continue to the next iteration
+                                    continue
+                                  # Write all remaining lines to the text file
+                                  for line in f_in:
+                                    f_out.write(line.replace('.', ',')[:19]+ '\n')
+                except NotADirectoryError:
+                    error_message = f"The directory '{folder}' did't can processed with .pr5. If you delete the figures folder, it will run normally."
+                    message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
+                    message.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                    message.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                    message.exec_()
+                    
                         
             ##########Pega todos os novos arquivos .txt e move ele para um pasta separada###########################
             # Loop over each folder containing the string "pr5_files"
@@ -703,6 +722,7 @@ class Program:
 
             #Ova checkBox_5      
             if self.checkBox_5.isChecked():
+                raioid = idn/2
                 #Iterate over the sheet names
                 for sheet_name in workbook.sheetnames:
                     sheet = workbook[sheet_name]
@@ -725,13 +745,15 @@ class Program:
                         ax.scatter(x, y, s=0.5)
 
                         # Add another circle with radius 81.575
-                        circle = plt.Circle((0,0), 82.55, color='red', fill=False)
+                        circle = plt.Circle((0,0), raioid, color='red', fill=False)
                         ax.add_artist(circle)
 
                         plt.axis('equal')
                         plt.xlim(-120, 120)
                         plt.ylim(-100, 100)
                         plt.title("Ova", fontweight='bold')
+                        plt.ylabel("mm")
+                        plt.xlabel("mm")
                         
                         ova_folder = os.path.join(self.selected_folder, "Ova")
                         if not os.path.exists(ova_folder):
@@ -743,7 +765,7 @@ class Program:
 
         #Finish program        
         self.movie.stop()
-        self.label.setGeometry(242, 140, 76, 10)
+        self.label.setGeometry(292, 140, 76, 10)
         self.label.setStyleSheet("color: white; font-size: 10pt; font-family: MS Shell Dlg 2; font-weight: bold")
         self.label.setText("COMPLETE")
                 
