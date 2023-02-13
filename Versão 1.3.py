@@ -56,7 +56,7 @@ class Ui_Measurements(object):
         self.label.setMaximumSize(QtCore.QSize(100, 100))
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
-        self.buttonBox.setGeometry(QtCore.QRect(200, 120, 180, 30))
+        self.buttonBox.setGeometry(QtCore.QRect(175, 120, 200, 30))
         self.buttonBox.setStyleSheet("background-color: rgb(0, 105, 165);\n"
 "color: rgb(255, 255, 255);\n"
 "font: 75 10pt \"MS Shell Dlg 2\";")
@@ -118,6 +118,7 @@ class Ui_Measurements(object):
         self.actionDoc = QtWidgets.QAction(Measurements)
         self.actionDoc.setObjectName("actionDoc")
         self.menuOption.addAction(self.actionData)
+        self.menubar.addAction(self.menuOption.menuAction())
         self.menuHelp.addAction(self.actionAbout_Measurement)
         self.menuHelp.addSeparator()
         self.menuHelp.addAction(self.actionDoc)
@@ -126,7 +127,6 @@ class Ui_Measurements(object):
         self.actionData.triggered.connect(self.open_data)
         self.actionAbout_Minerva.triggered.connect(self.open_about_minerva)
         self.actionAbout_Measurement.triggered.connect(self.open_about_measurement)
-        self.menubar.addAction(self.menuOption.menuAction())
         self.actionDoc.triggered.connect(self.open_doc)
 
         self.retranslateUi(Measurements)
@@ -137,7 +137,7 @@ class Ui_Measurements(object):
         Measurements.setWindowTitle(_translate("Measurements", "Measurements"))
         self.folder_select.setText(_translate("Measurements", "Select File Folder"))
         self.folder_select.clicked.connect(self.select_folder)
-        self.lineEdit.setText(_translate("Measurements", "  Version 1.4 by Minerva Dev® & Orion"))
+        self.lineEdit.setText(_translate("Measurements", "  Version 1.5 by Minerva Dev® & Orion"))
         self.checkBox.setText(_translate("MainWindow", "HeatMap"))
         self.checkBox_1.setText(_translate("Measurements", "Surface"))
         self.checkBox_2.setText(_translate("Measurements", "ID (mm)"))
@@ -164,14 +164,14 @@ class Ui_Measurements(object):
             wt = config.getfloat("DEFAULT", "wt")
             od = config.getfloat("DEFAULT", "od")
         except (configparser.NoOptionError, ValueError):
-            idn = 188.30
+            idn = 162,15
             tks = 22.00
             wt = 2.50
             od = 237.30
 
         data = QtWidgets.QDialog()
         data.setWindowTitle("Data")
-        data.resize(420, 420)
+        data.resize(320, 400)
         layout = QtWidgets.QVBoxLayout()
         
         # Add image
@@ -744,21 +744,21 @@ class Program:
                         fig, ax = plt.subplots()
                         ax.scatter(x, y, s=0.5)
 
-                        # Add another circle with radius 81.575
+                        # Add another circle with raioid 
                         circle = plt.Circle((0,0), raioid, color='red', fill=False)
                         ax.add_artist(circle)
 
                         plt.axis('equal')
                         plt.xlim(-120, 120)
                         plt.ylim(-100, 100)
-                        plt.title("Ova", fontweight='bold')
+                        plt.title("Ova - " + str(sheet.cell(row=i, column=2).value), fontweight='bold')
                         plt.ylabel("mm")
                         plt.xlabel("mm")
                         
                         ova_folder = os.path.join(self.selected_folder, "Ova")
                         if not os.path.exists(ova_folder):
                             os.makedirs(ova_folder)
-                        filename_ova = os.path.join(ova_folder, f"{sheet_name}-linha{i}.png")
+                        filename_ova = os.path.join(ova_folder, f"{sheet_name}-{sheet.cell(row=i, column=2).value}.png")
                         if os.path.exists(filename_ova):
                             os.remove(filename_ova)
                         plt.savefig(filename_ova, bbox_inches='tight')        
