@@ -111,6 +111,8 @@ class Ui_Measurements(object):
         Measurements.setStatusBar(self.statusbar)
         self.actionData = QtWidgets.QAction(Measurements)
         self.actionData.setObjectName("actionData")
+        self.actionColor = QtWidgets.QAction(Measurements)
+        self.actionColor.setObjectName("actionColor")
         self.actionAbout_Minerva = QtWidgets.QAction(Measurements)
         self.actionAbout_Minerva.setObjectName("actionAbout_Minerva")
         self.actionAbout_Measurement = QtWidgets.QAction(Measurements)
@@ -118,6 +120,7 @@ class Ui_Measurements(object):
         self.actionDoc = QtWidgets.QAction(Measurements)
         self.actionDoc.setObjectName("actionDoc")
         self.menuOption.addAction(self.actionData)
+        self.menuOption.addAction(self.actionColor)
         self.menubar.addAction(self.menuOption.menuAction())
         self.menuHelp.addAction(self.actionAbout_Measurement)
         self.menuHelp.addSeparator()
@@ -125,6 +128,7 @@ class Ui_Measurements(object):
         self.menuHelp.addAction(self.actionAbout_Minerva)
         self.menubar.addAction(self.menuHelp.menuAction())
         self.actionData.triggered.connect(self.open_data)
+        self.actionColor.triggered.connect(self.open_color)
         self.actionAbout_Minerva.triggered.connect(self.open_about_minerva)
         self.actionAbout_Measurement.triggered.connect(self.open_about_measurement)
         self.actionDoc.triggered.connect(self.open_doc)
@@ -146,6 +150,7 @@ class Ui_Measurements(object):
         self.checkBox_5.setText(_translate("Measurements", "Ova"))
         self.menuOption.setTitle(_translate("Measurements", "Option"))
         self.actionData.setText(_translate("Measurements", "Data"))
+        self.actionColor.setText(_translate("Measurements", "Color"))
         self.menuHelp.setTitle(_translate("Measurements", "Help"))
         self.actionAbout_Minerva.setText(_translate("Measurements", "About Minerva"))
         self.actionDoc.setText(_translate("Measurements", "Doc"))
@@ -164,7 +169,7 @@ class Ui_Measurements(object):
             wt = config.getfloat("DEFAULT", "wt")
             od = config.getfloat("DEFAULT", "od")
         except (configparser.NoOptionError, ValueError):
-            idn = 162,15
+            idn = 162.15
             tks = 22.00
             wt = 2.50
             od = 237.30
@@ -215,6 +220,41 @@ class Ui_Measurements(object):
         data.setLayout(layout)
         data.exec_()
 
+    def open_color(self):
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+
+        try:
+            bg = config.get("DEFAULT", "bg")
+            word = config.get("DEFAULT", "word")
+        except (configparser.NoOptionError, ValueError):
+            bg = "224C5A"
+            word = "f08a04"
+
+        cores = QtWidgets.QDialog()
+        cores.setWindowTitle("Colors")
+        cores.resize(320, 400)
+        layout = QtWidgets.QVBoxLayout()
+
+        # Add label and line edit for bg (Background for excel)
+        label_bg = QtWidgets.QLabel("Background Color")
+        layout.addWidget(label_bg)
+        line_edit = QtWidgets.QLineEdit()
+        line_edit.setText(bg)
+        layout.addWidget(line_edit)
+            
+        # Add label and line edit for word (color font for words in excel)
+        label_word = QtWidgets.QLabel("Color Font")
+        layout.addWidget(label_word)
+        line_edit_1 = QtWidgets.QLineEdit()
+        line_edit_1.setText(word)
+        layout.addWidget(line_edit_1)
+        cores.finished.connect(lambda: self.save_bg(line_edit.text(), config))
+        cores.finished.connect(lambda: self.save_word(line_edit_1.text(), config))
+        cores.setLayout(layout)
+        cores.exec_()
+
+
     def save_idn(self, idn, config):
         config.set("DEFAULT", "idn", idn.replace(",", "."))
         with open("config.ini", "w") as config_file:
@@ -234,6 +274,17 @@ class Ui_Measurements(object):
         config.set("DEFAULT", "wt", wt.replace(",", "."))
         with open("config.ini", "w") as config_file:
             config.write(config_file)
+            
+    def save_bg(self, color_string, config):
+        config.set("DEFAULT", "bg", color_string)
+        with open("config.ini", "w") as configfile:
+            config.write(configfile)
+
+    def save_word(self, color_string, config):
+        config.set("DEFAULT", "word", color_string)
+        with open("config.ini", "w") as configfile:
+            config.write(configfile)
+        
         
     def open_about_minerva(self):
         about_Minerva = QtWidgets.QDialog()
@@ -285,7 +336,7 @@ class Ui_Measurements(object):
         layout.addWidget(separator)
         label = QtWidgets.QLabel("Measurement is a program designed to Orion make it easy to take and store measurements."
                                  "With its user-friendly interface, you can perform accurate measurements with just a few clicks.\n\n"
-                                 "Version: 1.4\n"
+                                 "Version: 1.5\n"
                                  "Author: Marcus Filgueiras and Gustavo Pessanha\n"
                                  "Copyright (c) 2023 Minerva Dev")
         label.setWordWrap(True)
@@ -345,13 +396,14 @@ class Program:
         self.checkBox_3 = checkBox_3
         self.checkBox_4 = checkBox_4
         self.checkBox_5 = checkBox_5
-
         config = configparser.ConfigParser()
         config.read("config.ini")
         self.idn = config.getfloat("DEFAULT", "idn")
         self.od = config.getfloat("DEFAULT", "od")
         self.tks = config.getfloat("DEFAULT", "tks")
         self.wt = config.getfloat("DEFAULT", "wt")
+        self.bg = config.get("DEFAULT", "bg")
+        self.word = config.get("DEFAULT", "word")
 
     def show_error_message(self, error_message):
         message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
@@ -363,6 +415,8 @@ class Program:
         od = self.od
         wt = self.wt
         tks = self.tks
+        bg = self.bg
+        word = self.word
         if self.selected_folder:
             #Empty List
             filenames = []
@@ -595,8 +649,8 @@ class Program:
                 first_row_cells = sheet[1]
                 # Iterate over the cells in the first row and set the font and fill
                 for cell in first_row_cells:
-                    cell.fill = openpyxl.styles.PatternFill(patternType='solid', fgColor='224C5A')
-                    cell.font = Font(color='f08a04', bold=True)
+                    cell.fill = openpyxl.styles.PatternFill(patternType='solid', fgColor=bg)
+                    cell.font = Font(color=word, bold=True)
                     # Set the alignment for all cells in the worksheet
                 for row in sheet.rows:
                     for cell in row:
