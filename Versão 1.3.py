@@ -47,8 +47,8 @@ class Ui_Measurements(object):
         self.folder_select = QtWidgets.QPushButton(self.widget)
         self.folder_select.setGeometry(QtCore.QRect(25, 40, 550, 20))
         self.folder_select.setStyleSheet("background-color: rgb(0, 105, 165);\n"
-"color: rgb(255,255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";")
+                                        "color: rgb(255,255, 255);\n"
+                                        "font: 75 10pt \"MS Shell Dlg 2\";")
         self.folder_select.setText("Select folder")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(275, 140, 100, 100))
@@ -58,8 +58,8 @@ class Ui_Measurements(object):
         self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
         self.buttonBox.setGeometry(QtCore.QRect(175, 120, 200, 30))
         self.buttonBox.setStyleSheet("background-color: rgb(0, 105, 165);\n"
-"color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";")
+                                    "color: rgb(255, 255, 255);\n"
+                                    "font: 75 10pt \"MS Shell Dlg 2\";")
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.lineEdit = QtWidgets.QLineEdit(self.widget)
@@ -71,32 +71,32 @@ class Ui_Measurements(object):
         self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox.setGeometry(QtCore.QRect(20, 80, 82, 17))
         self.checkBox.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
+                                    "font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
         self.checkBox.setObjectName("checkBox")
         self.checkBox_1 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_1.setGeometry(QtCore.QRect(120, 80, 82, 17))
         self.checkBox_1.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
+                                        "font: 75 10pt \"MS Shell Dlg 2\"; font-weight: bold")
         self.checkBox_1.setObjectName("checkBox_1")
         self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_2.setGeometry(QtCore.QRect(220, 80, 111, 17))
         self.checkBox_2.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+                                        "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_2.setObjectName("checkBox_2")
         self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_3.setGeometry(QtCore.QRect(320, 80, 82, 17))
         self.checkBox_3.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+                                        "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_3.setObjectName("checkBox_3")
         self.checkBox_4 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_4.setGeometry(QtCore.QRect(420, 80, 82, 17))
         self.checkBox_4.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+                                        "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_4.setObjectName("checkBox_4")
         self.checkBox_5 = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBox_5.setGeometry(QtCore.QRect(520, 80, 82, 17))
         self.checkBox_5.setStyleSheet("color: rgb(255, 255, 255);\n"
-"font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
+                                        "font: 75 10pt \"MS Shell Dlg 2\";font-weight: bold")
         self.checkBox_5.setObjectName("checkBox_5")
         Measurements.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Measurements)
@@ -200,14 +200,14 @@ class Ui_Measurements(object):
         layout.addWidget(line_edit_1)
         
         # Add label and line edit for tks
-        label_tks = QtWidgets.QLabel("Thickness")
+        label_tks = QtWidgets.QLabel("Wall Thickness")
         layout.addWidget(label_tks)
         line_edit_2 = QtWidgets.QLineEdit()
         line_edit_2.setText("%.2f" % tks)
         layout.addWidget(line_edit_2)
         
         # Add label and line edit for wt
-        label_wt = QtWidgets.QLabel("Wall Thickness")
+        label_wt = QtWidgets.QLabel("CRA")
         layout.addWidget(label_wt)
         line_edit_3 = QtWidgets.QLineEdit()
         line_edit_3.setText("%.2f" % wt)
@@ -236,15 +236,29 @@ class Ui_Measurements(object):
         cores.resize(320, 400)
         layout = QtWidgets.QVBoxLayout()
 
+        # Add image
+        ref = QtGui.QPixmap("bg and word.png")
+        label_ref = QtWidgets.QLabel()
+        label_ref.setPixmap(ref)
+        layout.addWidget(label_ref)
+
+        # Add label with explanation text
+        explanation = QtWidgets.QLabel("By default, the background color will be set to 224C5A and the color font to f08a04 for the cells\n"
+                                    "in the first row, as shown in the above figure. However, you can modify these colors by using the options\n"
+                                    "Background and Color Font below. Once you make changes, the program will create a file with your last\n"
+                                    "modification. To change the colors, you need to input the hexadecimal color format without the # symbol.")
+        layout.addWidget(explanation)
+
+
         # Add label and line edit for bg (Background for excel)
-        label_bg = QtWidgets.QLabel("Background Color")
+        label_bg = QtWidgets.QLabel("Background Color: backgorund color of cell excel")
         layout.addWidget(label_bg)
         line_edit = QtWidgets.QLineEdit()
         line_edit.setText(bg)
         layout.addWidget(line_edit)
             
         # Add label and line edit for word (color font for words in excel)
-        label_word = QtWidgets.QLabel("Color Font")
+        label_word = QtWidgets.QLabel("Color Font: font color of first line of cell excel")
         layout.addWidget(label_word)
         line_edit_1 = QtWidgets.QLineEdit()
         line_edit_1.setText(word)
@@ -291,7 +305,13 @@ class Ui_Measurements(object):
         about_Minerva.setWindowTitle("About Minerva")
         about_Minerva.resize(280, 420)
         layout = QtWidgets.QVBoxLayout()
-        label = QtWidgets.QLabel("Informações sobre Minerva")
+        label = QtWidgets.QLabel("Minerva Dev is a company founded in 2023 that specializes in solving software problems\nfor businesses using the Python programming language."
+                                 "With an on-demand approach, the company provides customized and efficient solutions to meet each client's specific needs."
+                                 "With a highly skilled and experienced team, Minerva Dev is committed to providing quality service, always aiming for customer satisfaction and exceeding expectations.\n\n"
+                                 "The name Minerva Dev is inspired by the patron of the institution where the company's founders first met. "
+                                 "Founded by friends in 2023, the company is built on a strong foundation of mutual respect and shared values, which are reflected in its commitment"
+                                 "to providing excellent service and building lasting relationships with its clients.")
+        label.setWordWrap(True)
         layout.addWidget(label)
         about_Minerva.setLayout(layout)
         about_Minerva.exec_()
