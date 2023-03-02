@@ -18,6 +18,8 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.utils import get_column_letter
 from openpyxl.styles.numbers import NumberFormat
 from mpl_toolkits.mplot3d import Axes3D
+import tkinter as tk
+import tkinter.messagebox as messagebox
 
         
 class Ui_Measurements(object):
@@ -372,6 +374,11 @@ class Ui_Measurements(object):
         else:
             self.folder_select.setText(folder)
             self.selected_folder = folder
+
+    def close_program(self):
+        #Close the main window and exit the application
+        Measurements.close()
+        sys.exit()
     
 
     def run_program(self):
@@ -388,17 +395,13 @@ class Ui_Measurements(object):
             self.movie.start()
             # Run the program using the selected folder in a new thread
             program_instance = Program()
-            program_instance = Program(selected_folder=self.selected_folder, movie=self.movie, label=self.label, checkBox = self.checkBox, checkBox_1 = self.checkBox_1,checkBox_2 = self.checkBox_2, checkBox_3 = self.checkBox_3, checkBox_4 = self.checkBox_4, checkBox_5 = self.checkBox_5 )
+            program_instance = Program( selected_folder=self.selected_folder, movie=self.movie, label=self.label, checkBox = self.checkBox, checkBox_1 = self.checkBox_1,checkBox_2 = self.checkBox_2, checkBox_3 = self.checkBox_3, checkBox_4 = self.checkBox_4, checkBox_5 = self.checkBox_5 )
             t = threading.Thread(target=program_instance.programa)
             t.start()
 
-    def close_program(self):
-        #Close the main window and exit the application
-        Measurements.close()
-        sys.exit()
 
 class Program:
-    def __init__(self, selected_folder=None, movie=None, label=None, checkBox=None, checkBox_1=None,checkBox_2=None, checkBox_3=None, checkBox_4=None, checkBox_5=None):
+    def __init__(self, selected_folder=None, movie=None, label=None,checkBox=None, checkBox_1=None,checkBox_2=None, checkBox_3=None, checkBox_4=None, checkBox_5=None):
         self.selected_folder = selected_folder
         self.count = 0
         self.movie = movie
@@ -467,11 +470,13 @@ class Program:
                                   for line in f_in:
                                     f_out.write(line.replace('.', ',')[:19]+ '\n')
                 except NotADirectoryError:
-                    error_message = f"The directory '{folder}' did't can processed with .pr5. If you delete the figures folder, it will run normally."
-                    message = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, "Error", error_message)
-                    message.setStandardButtons(QtWidgets.QMessageBox.Ok)
-                    message.setDefaultButton(QtWidgets.QMessageBox.Ok)
-                    message.exec_()
+                    erro = True
+        if erro is True:
+            error_message = f"The directory '{folder}' couldn't processed with .pr5. If you delete the figures folder, it will run normally."
+            response = messagebox.showerror("Error", error_message)
+            if response == "ok":
+                # Exibe a mensagem de erro e encerra o programa
+                sys.exit()'
                     
                         
             ##########Pega todos os novos arquivos .txt e move ele para um pasta separada###########################
