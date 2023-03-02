@@ -2,24 +2,17 @@
 import threading
 import os
 import sys
-import time
-import os
 import pandas as pd
 import openpyxl
 import glob
 import shutil
 import numpy as np
-import time
-import seaborn as sns
-import statistics
 import configparser
 import matplotlib.pyplot as plt
-import plotly.express as px
 import plotly.graph_objs as go
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QMovie
-from mpl_toolkits import mplot3d
 from openpyxl.styles import Font, Color, PatternFill, Alignment
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.utils import get_column_letter
@@ -165,13 +158,13 @@ class Ui_Measurements(object):
 
         try:
             idn = config.getfloat("DEFAULT", "idn")
-            tks = config.getfloat("DEFAULT", "tks")
             wt = config.getfloat("DEFAULT", "wt")
+            cra = config.getfloat("DEFAULT", "cra")
             od = config.getfloat("DEFAULT", "od")
         except (configparser.NoOptionError, ValueError):
             idn = 162.15
-            tks = 22.00
-            wt = 2.50
+            wt = 22.00
+            cra = 2.50
             od = 237.30
 
         data = QtWidgets.QDialog()
@@ -199,24 +192,24 @@ class Ui_Measurements(object):
         line_edit_1.setText("%.2f" % od)
         layout.addWidget(line_edit_1)
         
-        # Add label and line edit for tks
-        label_tks = QtWidgets.QLabel("Wall Thickness")
-        layout.addWidget(label_tks)
+        # Add label and line edit for wt
+        label_wt = QtWidgets.QLabel("Wall Thickness")
+        layout.addWidget(label_wt)
         line_edit_2 = QtWidgets.QLineEdit()
-        line_edit_2.setText("%.2f" % tks)
+        line_edit_2.setText("%.2f" % wt)
         layout.addWidget(line_edit_2)
         
-        # Add label and line edit for wt
-        label_wt = QtWidgets.QLabel("CRA")
-        layout.addWidget(label_wt)
+        # Add label and line edit for cra
+        label_cra = QtWidgets.QLabel("CRA")
+        layout.addWidget(label_cra)
         line_edit_3 = QtWidgets.QLineEdit()
-        line_edit_3.setText("%.2f" % wt)
+        line_edit_3.setText("%.2f" % cra)
         layout.addWidget(line_edit_3)
     
         data.finished.connect(lambda: self.save_idn(line_edit.text(), config))
         data.finished.connect(lambda: self.save_od(line_edit_1.text(), config))
-        data.finished.connect(lambda: self.save_tks(line_edit_2.text(), config))
-        data.finished.connect(lambda: self.save_wt(line_edit_3.text(), config))
+        data.finished.connect(lambda: self.save_wt(line_edit_2.text(), config))
+        data.finished.connect(lambda: self.save_cra(line_edit_3.text(), config))
         data.setLayout(layout)
         data.exec_()
 
@@ -279,13 +272,13 @@ class Ui_Measurements(object):
         with open("config.ini", "w") as config_file:
             config.write(config_file)
 
-    def save_tks(self, tks, config):
-        config.set("DEFAULT", "tks", tks.replace(",", "."))
+    def save_wt(self, wt, config):
+        config.set("DEFAULT", "wt", wt.replace(",", "."))
         with open("config.ini", "w") as config_file:
             config.write(config_file)
 
-    def save_wt(self, wt, config):
-        config.set("DEFAULT", "wt", wt.replace(",", "."))
+    def save_cra(self, cra, config):
+        config.set("DEFAULT", "cra", cra.replace(",", "."))
         with open("config.ini", "w") as config_file:
             config.write(config_file)
             
@@ -420,8 +413,8 @@ class Program:
         config.read("config.ini")
         self.idn = config.getfloat("DEFAULT", "idn")
         self.od = config.getfloat("DEFAULT", "od")
-        self.tks = config.getfloat("DEFAULT", "tks")
         self.wt = config.getfloat("DEFAULT", "wt")
+        self.cra = config.getfloat("DEFAULT", "cra")
         self.bg = config.get("DEFAULT", "bg")
         self.word = config.get("DEFAULT", "word")
 
@@ -433,8 +426,8 @@ class Program:
     def programa(self):
         idn = self.idn
         od = self.od
+        cra = self.cra
         wt = self.wt
-        tks = self.tks
         bg = self.bg
         word = self.word
         if self.selected_folder:
@@ -823,8 +816,6 @@ class Program:
                         ax.add_artist(circle)
 
                         plt.axis('equal')
-                        plt.xlim(-120, 120)
-                        plt.ylim(-100, 100)
                         plt.title("Ova - " + str(sheet.cell(row=i, column=2).value), fontweight='bold')
                         plt.ylabel("mm")
                         plt.xlabel("mm")
